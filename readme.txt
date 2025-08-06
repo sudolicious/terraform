@@ -5,7 +5,6 @@ This Terraform configuration creates 2 virtual machines in VirtualBox.
 Requirements:
 1. VirtualBox 6.0+ (https://www.virtualbox.org/)
 2. Terraform 1.0+ (https://www.terraform.io/)
-3. VirtualBox Extension Pack
 
 Quick Start:
 1. Clone the repository:
