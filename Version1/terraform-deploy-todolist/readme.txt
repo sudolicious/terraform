@@ -1,12 +1,7 @@
-Creating Todolist Application Infrastructure with Terraform
+Creating Todolist Application Infrastructure with Terraform, stage 2
 
 Description:
-This project automates the deployment of the Todolist application using Terraform (provider terra-farm/virtualbox provider).
-
-Infrastructure is created in several stages:
-1. Creating virtual machines in VirtualBox
-2. Setting up a Kubernetes cluster using Kubespray
-3. Deploying the application to the Kubernetes cluster
+This project automates the deployment of the Todolist application using Helm
 
 Application Architecture:
 - Frontend: React application
@@ -17,31 +12,21 @@ Application Architecture:
 Requirements:
 - Terraform v1.0+
 - VirtualBox 6.0+
-- WSL (Windows Subsystem for Linux)
-- Kubespray
-- Helm
+- Kubernetes Cluster
 
-Deployment Steps:
+Deploying the application to the Kubernetes cluster:
 
 1. Clone the repository
    git clone https://github.com/sudolicious/terraform
 
-2. Create virtual machines:
-   cd creating-vms
+2. Deploy the application to ready k8s-cluster:
+   cd Version1/todolist
    terraform init
-   terraform apply
-
-3. Set up Kubernetes and deploy the application:
-   cd ../todolist
-   terraform init
+   terraform plan
    terraform apply
 
 Important files:
-- creating-vms/main.tf: Terraform configuration for creating virtual machines and inventory file
-- creating-vms/templates/inventory.tpl: Ansible inventory template
-- creating-vms/variables.tf: configuration variables
-
-- todolist/main.tf: configuration for deploying the Kubernetes cluster and application
+- todolist/main.tf: configuration for deploying the application with Helm
 - todolist/variables.tf: configuration variables
 - backend/: Helm chart for the backend application
 - frontend/: Helm chart for the frontend application
@@ -49,4 +34,4 @@ Important files:
 After successfully completing all stages, the application will be available at:
 http://altenar-internship-2025.com/
 
-Note: Ensure all dependencies are installed and WSL is properly configured before running.
+Note: Ensure k8s-cluster is ready before running.

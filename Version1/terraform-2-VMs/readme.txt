@@ -1,4 +1,4 @@
-Terraform: 2 VMs in VirtualBox (provider terra-farm)
+Terraform: 2 VMs in VirtualBox (provider terra-farm), Stage 1
 
 This Terraform configuration creates 2 virtual machines in VirtualBox.
 
