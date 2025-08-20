@@ -19,7 +19,10 @@ Deploying the application to the Kubernetes cluster:
 1. Clone the repository
    git clone https://github.com/sudolicious/terraform
 
-2. Deploy the application to ready k8s-cluster:
+2. Create password secret in k8s-cluster
+   kubectl create secret generic postgres-secret --from-literal=POSTGRES_PASSWORD=yoursecretpassword
+
+3. Deploy the application to ready k8s-cluster:
    cd Version1/todolist
    terraform init
    terraform plan
