@@ -1,0 +1,29 @@
+replicaCount: 1
+
+image:
+  repository: sudolicious1/todolist-frontend
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  
+ingress:
+  enabled: true
+  className: "nginx"
+  hosts:
+    - host: "altenar-internship-2025.com"
+      paths:
+        - path: /
+          pathType: Prefix
+        - path: /api
+          pathType: Prefix
+
+backend:
+  serviceName: "backend"
+  servicePort: 8080
+
+env:
+  REACT_APP_API_BASE_URL: "/api"
+
+resources: {}
