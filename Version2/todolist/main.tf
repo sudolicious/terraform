@@ -11,31 +11,6 @@ terraform {
   }
 }
 
-resource "null_resource" "run_kubespray" {
-  provisioner "local-exec" {
-    command = "wsl bash /mnt/c/Users/olga/terraform/Version4/todolist/kubespray_setup.sh"
-  }
-}
-
-# Ждем пока kubeconfig будет готов
-resource "null_resource" "wait_for_kubeconfig" {
-  provisioner "local-exec" {
-    command = <<EOT
-      echo "Ожидаем создание kubeconfig..."
-      timeout /t 60 /nobreak
-      if exist "C:\\Users\\olga\\.kube\\config" (
-        echo "Kubeconfig успешно создан!"
-      ) else (
-        echo "Kubeconfig не найден"
-        exit 1
-      )
-    EOT
-  }
-
-  depends_on = [null_resource.run_kubespray]
-}
-
-# Провайдеры БЕЗ depends_on - это недопустимо в provider блоке
 provider "kubernetes" {
   config_path = "C:/Users/olga/.kube/config"
 }
@@ -46,7 +21,30 @@ provider "helm" {
   }
 }
 
-# Деплой приложений с правильными зависимостями
+resource "null_resource" "run_kubespray" {
+  provisioner "local-exec" {
+    command = "wsl bash /mnt/c/Users/olga/terraform/Version4/todolist/kubespray_setup.sh"
+  }
+}
+
+resource "null_resource" "wait_for_kubeconfig" {
+  provisioner "local-exec" {
+    command = <<EOT
+      echo "Waiting for kubeconfig..."
+      timeout /t 60 /nobreak
+      if exist "C:\\Users\\olga\\.kube\\config" (
+        echo "Kubeconfig created!"
+      ) else (
+        echo "Kubeconfig not found"
+        exit 1
+      )
+    EOT
+  }
+
+  depends_on = [null_resource.run_kubespray]
+}
+
+# Deploy Todolist with helm
 resource "helm_release" "postgresql" {
   name       = "todolist-postgresql"
   repository = "https://charts.bitnami.com/bitnami"
@@ -90,7 +88,7 @@ resource "helm_release" "postgresql" {
     value = var.postgresql_config.storage_size
   }
 
-  # Ждем пока kubeconfig будет готов И пока кластер развернется
+  # Wait for kubeconfig
   depends_on = [
     null_resource.wait_for_kubeconfig,
     null_resource.run_kubespray
