@@ -27,23 +27,6 @@ resource "null_resource" "run_kubespray" {
   }
 }
 
-resource "null_resource" "wait_for_kubeconfig" {
-  provisioner "local-exec" {
-    command = <<EOT
-      echo "Waiting for kubeconfig..."
-      timeout /t 60 /nobreak
-      if exist "C:\\Users\\olga\\.kube\\config" (
-        echo "Kubeconfig created!"
-      ) else (
-        echo "Kubeconfig not found"
-        exit 1
-      )
-    EOT
-  }
-
-  depends_on = [null_resource.run_kubespray]
-}
-
 # Secret PostgreSQL
 resource "kubernetes_secret" "postgres_secret" {
   metadata {
@@ -55,7 +38,7 @@ resource "kubernetes_secret" "postgres_secret" {
     (var.postgresql_config.password_key) = var.postgresql_password
   }
 
-  depends_on = [null_resource.wait_for_kubeconfig]
+  depends_on = [null_resource.run_kubespray]
 }
 
 # Deploy Todolist with helm
