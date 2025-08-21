@@ -29,6 +29,12 @@ variable "postgresql_config" {
   }
 }
 
+variable "postgresql_password" {
+  description = "Password for PostgreSQL"
+  type        = string
+  sensitive   = true
+}
+
 variable "ingress_config" {
   description = "Ingress configuration"
   type = object({

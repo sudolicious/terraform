@@ -44,6 +44,20 @@ resource "null_resource" "wait_for_kubeconfig" {
   depends_on = [null_resource.run_kubespray]
 }
 
+# Secret PostgreSQL
+resource "kubernetes_secret" "postgres_secret" {
+  metadata {
+    name      = var.postgresql_config.existing_secret
+    namespace = var.namespace
+  }
+
+  data = {
+    (var.postgresql_config.password_key) = var.postgresql_password
+  }
+
+  depends_on = [null_resource.wait_for_kubeconfig]
+}
+
 # Deploy Todolist with helm
 resource "helm_release" "postgresql" {
   name       = "todolist-postgresql"
@@ -52,6 +66,8 @@ resource "helm_release" "postgresql" {
   version    = var.postgresql_config.chart_version
   namespace  = var.namespace
   timeout    = 600
+
+  depends_on = [kubernetes_secret.postgres_secret]
 
   set {
     name  = "global.postgresql.auth.existingSecret"
@@ -88,11 +104,6 @@ resource "helm_release" "postgresql" {
     value = var.postgresql_config.storage_size
   }
 
-  # Wait for kubeconfig
-  depends_on = [
-    null_resource.wait_for_kubeconfig,
-    null_resource.run_kubespray
-  ]
 }
 
 resource "helm_release" "backend" {

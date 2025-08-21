@@ -40,7 +40,8 @@ Deployment Steps:
 4. Set up Kubernetes and deploy the application:
    cd ../todolist
    terraform init
-   terraform apply
+   terraform plan -var-file="./secrets.tfvars"
+   terraform apply -var-file="./secrets.tfvars"
 
 Important files:
 - creating-vms/main.tf: Terraform configuration for creating virtual machines and inventory file
